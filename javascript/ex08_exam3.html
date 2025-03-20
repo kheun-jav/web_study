@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            height:200px;
+            width:100px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <p> 3행 3열짜리 테이블을 생성하고, 내용은 1 ~ 9까지의 값을 넣어서
+        box1 태그에 출력하기
+    </p>
+    <div id="area"></div>
+    <script>
+        let html = "<table border=1>";
+        for(let i = 1, num =1; i<=3; i++){
+            html +="<tr>";
+            for(let j=1; j<=3; j++){
+                html += `<td>${num++}</td>`;
+            }
+        }
+        html += "</table>";
+        document.getElementById("area").innerHTML = html;
+    </script>
+</body>
+</html>

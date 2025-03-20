@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!-- webapp/test/test1.html -->
+<html>
+<head>
+<meta charset="UTF-8">
+<title>바구니수 구하기</title>
+<style type="text/css">
+   input {text-align: right;}
+</style>
+</head>
+<body>
+<table><caption>바구니수 계산하기</caption>
+  <tr><th>바구니당 사과 갯수</th>
+      <td><select id="cnt">
+        <option value="5">5개</option><option value="10">10개</option>
+        <option value="15">15개</option><option value="20">20개</option>
+      </select></td></tr>
+<tr><th>사과의 총갯수</th>
+<td><input type="text" id="apple"></td></tr>      
+<tr><td colspan="2" align="right">
+  <input type="button" value="바구니수 계산하기"
+     onclick="calc()" style="width:100%; text-align:center;">
+</td></tr>
+<tr><th>필요한 바구니수</th><td>
+<input type="text" id="basketcnt">
+</td></tr></table>
+<script>
+  //calc() function 시작
+  function calc() {
+    //id가 apple인 태그의 value요소 (text 태그에서 직접 입력한 값)를 apple에 할당
+    let apple = document.getElementById("apple").value;
+    //id가 cnt인 태그의 value요소 (option 태그의 선택한 옵션의 value값)를 cnt에 할당
+    let cnt = document.getElementById("cnt").value;
+    //id가 basketcnt인 태그의 value 요소를
+    document.getElementById("basketcnt").value =
+    //사과의 총 개수에서 바구니당 사과 갯수를 나눈 값보다 큰 정수값이 바구니의 개수이다.
+    // Math.ceil("number") : number보다 큰 가장 가까운 정수값 
+      Math.ceil(apple/cnt);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>구구단출력하기</title>
+<style type="text/css">
+ table { width:100%; border-collapse: collapse;}
+ th,td {border : 3px solid #bcbcbc; text-align: center; padding: 8px;}
+ th {background-color: #e2e2e2; color:#111111;}
+ td {background-color: #f2f2f2;}
+ caption {color:#111111; font-size: 20px; background-color: #ffffff;}
+</style>
+</head>
+<body>
+<input type="button" value="세로출력" onclick="print1()">
+<input type="button" value="가로출력" onclick="print2()">
+<input type="button" value="2단출력"  onclick="print3()">
+<div id="gugudan"></div>
+<script>
+    function print1() { //세로출력
+        // "gugudan" id를 가지고 있는 태그를 out에 할당
+        let out = document.getElementById("gugudan");
+        // caption으로 제목 출력
+        out.innerHTML = '<table><caption>세로출력</caption>';
+        // 구구단 테이블 작성
+        //세로출력은 한줄에 하나씩 출력해야하기 때문에
+        //한줄 = 하나의 테이블로 생각하여 innerHTML을 작성
+        for(let i=2; i<=9; i++){ 
+            out.innerHTML +="<table><th>"+i+"단</th></table>";
+            for(let j=1; j<=9; j++){
+            out.innerHTML +="<table><td>"+i+"*"+j+"="+i*j+"</td></table>";
+            }
+        }
+    }
+    function print2() { // 가로출력
+    // id="gugudan"인 태그를 out에 할당
+    let out = document.getElementById("gugudan");
+    //반복문으로 구구단을 중첩시킬 html 변수 생성 후 table 태그 오픈
+    let html = "<table border='1'>";
+    //caption으로 제목 출력
+    out.innerHTML = '<table><caption>가로출력</caption></table>';
+    // 첫 번째 줄: 제목 (2단~9단)
+    //1행 open
+    html += "<tr>";
+    //2 ~ 9까지의 반복문 시작
+    for (let i = 2; i <= 9; i++) {
+    //1행의 열 요소들을 i단으로 출력
+      html += "<th>" + i + "단</th>";
+    }
+    //1행 close
+    html += "</tr>";
+
+    // 두 번째 줄부터: 각 단의 곱셈 결과 (1~9)
+    // 각 행마다 뒤에 곱해질 수 j 루프문 오픈
+    for (let j = 1; j <= 9; j++) {
+      //행 오픈
+      html += "<tr>";
+    // 각 행마다 앞에 곱해질 i 루프문 오픈
+      for (let i = 2; i <= 9; i++) {
+    // 각 행의 열 요소에 곱셈식의 값을 할당
+        html += "<td>" + i + " * " + j + " = " + (i * j) + "</td>";
+      }
+    // 행 close
+      html += "</tr>";
+    }
+    // table close
+    html += "</table>";
+    // 모든 결과 innerHTML에 저장
+    out.innerHTML += html;
+}
+
+    function print3() { //2단 출력
+    // html문 출력할 div 태그 out에 할당
+    let out = document.getElementById("gugudan");
+    // 구구단 table 작성할 html 변수 생성 후 table 태그 오픈
+    let html = "<table border='1'>";
+    // caption으로 제목 설정
+    out.innerHTML = '<table><caption>2단출력</caption></table>'; 
+     // 첫단 제목 (2단~5단)
+     // 행 오픈
+    html += "<tr>";
+    // 2~5까지 반복문 시작
+    for (let i = 2; i <= 5; i++) {
+    // 열요소에 해당 값들 할당
+      html += "<th>" + i + "단</th>";
+    }
+    // 행 close
+    html += "</tr>";
+    // 첫 단 곱셈 결과 (2~5단)
+    // 곱셈의 뒷부분 숫자 j 반복문 시작
+    for (let j = 2; j <= 9; j++) {
+    // 행 오픈
+      html += "<tr>";
+    // 곱셈의 앞부분 숫자 i 반복문 시작
+      for (let i = 2; i <= 5; i++) {
+    // 2 ~ 5 까지 열요소에 아래 값들 할당
+        html += "<td>" + i + " × " + j + " = " + (i * j) + "</td>";
+      }
+    // 행 close (행은 j 반복문이 종료될때 까지 계속 제작된다.)
+      html += "</tr>";
+    }
+     // 두번쨰 단 제목 (6단~9단)
+    //행 오픈
+    html += "<tr>";
+    // 6 ~9 단 출력할 반복문 시작
+    for (let i = 6; i <= 9; i++) {
+    //해당 행의 열요소에 값들 할당
+      html += "<th>" + i + "단</th>";
+    }
+    //반복문 close 및 행 close
+    html += "</tr>";
+    //두번쨰 단 곱셈 결과 (6~9단)
+    //곱셈의 뒷부분에 해당되는 j 반복문 오픈
+    for (let j = 2; j <= 9; j++) {
+    // 행 오픈
+      html += "<tr>";
+    // 곱셈의 단 부분에 해당되는 i 반복문 시작
+      for (let i = 6; i <= 9; i++) {
+    // 해당 행의 열요소에 값들 할당
+        html += "<td>" + i + " × " + j + " = " + (i * j) + "</td>";
+      }
+    // 행 close
+      html += "</tr>";
+    }
+    // j 반목문이 끝날떄까지 행을 생성하여 열값 할당 후 반복문 종료
+    // 모든요소들이 저장되었으므로 table 종료
+    html += "</table>";
+    //html에 저장된 table 값을 innerHTML에 최종적으로 저장
+    out.innerHTML += html;
+  }
+
+</script>
+</body>
+</html>

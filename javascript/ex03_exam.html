@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시급계산하기</title>
+    <style type="text/css">
+        input {text-align: right;}
+        table,tr,td,th {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+     </style>
+</head>
+<body>
+    <p> 시간당 임금을 입력받고, 8시간까지는 최저시급을 받고, 8시간 초과 근무는 최저 시급의 1.5배를
+         받는다고 할 때, 근무시간 만큼 근무했을 때의 일당을 #totalPay에 출력하기</p>
+    <table><caption>급여 계산하기</caption>
+        <tr><th>시간당임금</th>
+            <!--let payPerHour document.getElementById("payPerHour")
+            let valuePay = payPerHour.value;
+            -->
+            <td><input type="text" id="payPerHour"></td></tr>      
+        <tr><th>근무시간</th>
+            <td><input type="text" id="workTime"></td></tr>      
+        <tr><td colspan="2" align="right">
+        <input type="button" value="총급여 계산하기"
+        onclick="calc()" style="width:100%; text-align:center;">
+      </td></tr>
+      <tr><th>받을 수 있는 총급여</th><td>
+      <input type="text" id="totalPay">
+      </td></tr></table>
+        <script>
+            function calc() { 
+                /*입력을 받고 계산하는 함수에서 입력받은 값들이 반영되려면
+                  함수 내에서 value 값에 대한 변수가 선언되어야한다.*/
+                let payPerHour = document.getElementById("payPerHour").value;
+                let workTime = document.getElementById("workTime").value;
+                let totpay = (workTime > 8) ? (payPerHour*8)+(payPerHour*1.5)*(workTime-8) : payPerHour*workTime; 
+                document.getElementById("totalPay").value = totpay;
+            }
+        </script>
+</body>
+</html>
+접기
+
+
+
+
+
+
+
+
+
