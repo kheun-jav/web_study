@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>두더지 잡기 게임</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            cursor: url('https://cdn-icons-png.flaticon.com/512/189/189671.png'), auto;
+        }
+        #game-container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        #timer-container {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #timer-bar {
+            height: 20px;
+            background-color: red;
+            width: 100%;
+            transition: width 1s linear;
+            border-radius: 5px;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 5px;
+            margin-top: 10px;
+        }
+        .cell {
+            width: 80px;
+            height: 80px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+        .mole {
+            width: 50px;
+            height: 50px;
+            background-color: brown;
+            border-radius: 50%;
+            cursor: url('https://cdn-icons-png.flaticon.com/512/189/189671.png'), auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-primary">두더지 잡기 게임</h1>
+        <div id="game-container" class="text-center">
+            <div id="timer-container">제한 시간: <span id="time-left">60</span>초</div>
+            <div class="progress my-3">
+                <div id="timer-bar" class="progress-bar"></div>
+            </div>
+            <div id="board"></div>
+            <p class="mt-3">Score: <span id="score">0</span></p>
+            <p>Max Score: <span id="max-score">0</span></p>
+            <div id="difficulty-buttons">
+                <button class="btn btn-success difficulty" data-speed="1200">하</button>
+                <button class="btn btn-warning difficulty" data-speed="800">중</button>
+                <button class="btn btn-danger difficulty" data-speed="500">상</button>
+                <button class="btn btn-dark difficulty" data-speed="300">최상</button>
+            </div>
+            <button id="start-button" class="btn btn-primary mt-3">게임 시작</button>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            let score = 0;
+            let maxScore = 0;
+            let timeLeft = 60;
+            let gameInterval, timerInterval;
+            let moleSpeed = 1000;
+    
+            $(".difficulty").on("click", function() {
+                moleSpeed = $(this).data("speed");
+            });
+    
+            $("#start-button").on("click", function() {
+                $("#difficulty-buttons, #start-button").hide();
+                startGame();
+            });
+    
+            function startGame() {
+                score = 0;
+                timeLeft = 60;
+                $("#score").text(score);
+                $("#time-left").text(timeLeft);
+                $("#timer-bar").css("width", "100%");
+                $("#board").empty();
+                for (let i = 0; i < 16; i++) {
+                    $("#board").append('<div class="cell"></div>');
+                }
+                gameInterval = setInterval(spawnMole, moleSpeed);
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+    
+            function updateTimer() {
+                timeLeft--;
+                $("#time-left").text(timeLeft);
+                $("#timer-bar").css("width", (timeLeft / 60) * 100 + "%");
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }
+    
+            function endGame() {
+                clearInterval(gameInterval);
+                clearInterval(timerInterval);
+                maxScore = Math.max(maxScore, score);
+                $("#max-score").text(maxScore);
+                if (confirm("Game Over! Your Score: " + score + "\n다시 시작하시겠습니까?")) {
+                    $("#difficulty-buttons, #start-button").show();
+                } else {
+                    window.close();
+                }
+            }
+    
+            function spawnMole() {
+                let mole = $('<div class="mole"></div>');
+                let cells = $(".cell");
+                let randomCell = cells.eq(Math.floor(Math.random() * cells.length));
+                if (randomCell.children().length === 0) {
+                    randomCell.append(mole);
+                    mole.on("click", function() {
+                        score++;
+                        $("#score").text(score);
+                        $(this).remove();
+                    });
+                    setTimeout(() => mole.remove(), 800);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

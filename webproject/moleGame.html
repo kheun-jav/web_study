@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>두더지 잡기 게임</title>
+    <script src="../jquery/resource/jquery_3.7.1.js"></script>
+    <style>
+        body {text-align: center;}
+        #game-container {
+            width: 300px;
+            margin: auto;
+        }
+        #timer-bar {
+            height: 20px;
+            background-color: red;
+            width: 100%;
+        }
+        #playtime {
+            font-size: 18px;
+            font-weight: bold;
+            display:none;
+        }
+        /*display:grid => 부모요소를 그리드 컨테이너로 변경*/
+        #board {
+            display: grid;
+            /*grid 컨테이너 요소들을 균등한 간격으로 4열로 정렬*/
+            grid-template-columns: repeat(4, 1fr);
+            /*grid 요소들의 간격을 설정*/
+            grid-gap: 5px;
+            /*board와 timer-bar 사이의 margin 설정*/
+            margin-top: 10px;
+        }
+        .cell {
+            width: 70px;
+            height: 70px;
+            background-color: lightgray;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mole {
+            width: 50px;
+            height: 50px;
+            cursor: url('img/cursor2.cur'), auto;
+        }
+        #start-button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #restart-button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>두더지 잡기 게임</h1>
+    <div id="game-container"> <!--게임 전체 area -->
+        <div id="playtime"></div> <!-- 시간 표시 area -->
+        <div id="timer-bar"></div> <!-- 제한시간 바 area-->
+        <div id="board"> <!-- 두더지 게임 보드 -->
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        </div> <!-- 추후 함수에서 배열처리를 위해 각각을 전부 div로 제작 -->
+        <p>점수: <span id="score">0</span>점</p> <!-- score 영역 -->
+        <p>최고 점수: <span id="max-score">0</span>점</p> <!-- 최고점수 (Max-score) 영역-->
+        <button id="start-button">게임 시작</button> <!-- 게임 시작 버튼 -->
+        <button id="restart-button">게임 재시작</button> <!-- 게임 재시작 버튼 -->
+    </div>
+    <script>
+        /* $(document).ready() : 문서가 준비되면(실행되면) 이벤트 함수 발생 */
+        $(document).ready(function() {
+            //점수, 최고점수 변수 초기화
+            let score = 0;
+            let maxScore = 0;
+            // 제한시간 (1분) 변수 생성
+            let timeLeft = 10;
+            //두더지 랜덤 생성함수와 시간제한 함수의 setInterval을 저장할 변수 생성
+            let gameInterval, timerInterval;
+            //게임 시작 함수 
+            function startGame() {
+                //score area에 text 공간에 score 변수 저장
+                $("#score").text(score);
+                // time-bar의 넓이 100%로 설정
+                $("#timer-bar").css("width", "100%");
+                //시작 버튼 클릭시 숨김처리
+                $("#start-button").hide();
+                // 두더지 랜덤함수와 제한시간 함수의 interval을 1초로 지정한 후 변수에 저장
+                gameInterval = setInterval(spawnMole, 800);
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+            //제한 시간 설정 함수
+            function updateTimer() {
+                //숫자시간 영역을 나타남(show())처리후 text()에 제한시간 표시
+                $("#playtime").show().text(`제한시간 : ${timeLeft}초`);
+                //timeLeft 1씩 감소(설정된 Interval에 의해 60부터 1초에 1씩 감소)
+                timeLeft--;
+                //time-bar 영역의 배경색을 1% 감소 (설정된 Interval에 의해 100%에서 1%씩 영역 감소)
+                $("#timer-bar").css("width", (timeLeft / 10) * 100 + "%");
+                //제한시간 (timeLeft) 가 0이하가 될 경우 게임종료 함수 실행
+                if (timeLeft < 0) {
+                    endGame();
+                }
+            }
+            //게임 종료 함수
+            function endGame() {
+                //두더지 랜덤 함수와 제한시간 설정 함수에 걸려있던 Interval을 제거(clear)
+                clearInterval(gameInterval);
+                clearInterval(timerInterval);
+                //해당 판에 정산된 score와 저장된 max-score을 비교하여 더 큰 수를 maxScore에 저장
+                maxScore = Math.max(maxScore, score);
+                if( score == maxScore){
+                    $("#playtime").html("게임 종료. 최고점수 달성!<br>점수 : "+score+"점");
+                } else if (score <= 3) {
+                    $("#playtime").html("게임 종료. 분발하세요! <br> 점수: "+score+"점");
+                } else {
+                    $("#playtime").html("게임 종료. <br> 점수: "+score+"점");
+                }
+                //max-score 영역에 score 표시
+                $("#max-score").text(maxScore);
+                //게임 재시작 버튼 나타남(show()) 처리
+                $("#restart-button").show();
+            }
+            $("#restart-button").click(function(){
+                score = 0;  // 점수 초기화
+                timeLeft = 10;  // 시간 초기화
+                $("#score").text(score);  // 화면에 점수 초기화
+                $("#playtime").hide();  // 시간 영역 숨기기
+                $("#timer-bar").css("width", "100%");  // 제한시간 바 초기화
+                $("#restart-button").hide();  // 재시작 버튼 숨기기
+                startGame();  // 게임 시작
+            })
+    
+            function spawnMole() { //디그다 랜덤 발생
+                let mole = $('<img src="img/digda.webp" class="mole"></img>'); //디그다 이미지 태그 생성
+                let cells = $(".cell"); //class= cell인 태그들 전부 저장 (배열객체)
+                let randomCell = $(cells[Math.floor(Math.random() * cells.length)]); // ceil의 인덱스 번호를 0~ceil.length 사이의 임의의 정수로 반환
+                if (randomCell.children().length == 0) { //ceil의 렌덤 인덱스 번호의 하위 요소의 길이가 0이면(존재하지 않으면)
+                    randomCell.append(mole); // ceil의 랜덤 인덱스 번호의 자리에 mole 추가
+                    mole.on("click", function() { //mole 클릭 이벤트 발생시시
+                        score++;    //score 1++
+                        $("#score").text(score); //score 영역의 text도 증가한 score로 할당
+                        $(this).remove();  // this = mole  => 클릭시 mole 객체 삭제
+                    });
+                    setTimeout(function(){ mole.remove()}, 700); //클릭하지 않으면 700밀리초동안 유지 후 mole 제거
+                }
+            } 
+            // 문서에서 id = start-button인 태그를 클릭했을때 게임이 시작
+            $(document).on("click", "#start-button", startGame);
+        });
+    </script>
+</body>
+</html>
